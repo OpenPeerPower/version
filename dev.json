@@ -2,7 +2,7 @@
   "channel": "dev",
   "supervisor": "2020.12.dev2801",
   "openpeerpower": {
-    "default": "2021.1.0.dev20201230",
+    "default": "v2.1",
     "qemux86": "2021.1.0.dev20201230",
     "qemux86-64": "2021.1.0.dev20201230",
     "qemuarm": "2021.1.0.dev20201230",
