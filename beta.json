@@ -37,7 +37,7 @@
     "intel-nuc": "5.9"
   },
   "ota": "https://github.com/open-peer-power/operating-system/releases/download/{version}/oppos_{board}-{version}.raucb",
-  "cli": "2020.11.1",
+  "cli": "v1.2",
   "dns": "2020.12.0",
   "audio": "17",
   "multicast": "3",
