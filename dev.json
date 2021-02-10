@@ -37,7 +37,7 @@
     "intel-nuc": "6.0.dev20201222"
   },
   "ota": "https://os-builds.open-peer-power.io/{version}/oppos_{board}-{version}.raucb",
-  "cli": "2020.11.dev3001",
+  "cli": "v1.2",
   "dns": "2020.12.dev2801",
   "audio": "2020.10.dev213",
   "multicast": "2020.10.dev211",
