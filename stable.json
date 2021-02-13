@@ -38,7 +38,7 @@
   },
   "ota": "https://github.com/open-peer-power/operating-system/releases/download/{version}/oppos_{board}-{version}.raucb",
   "cli": "2020.11.1",
-  "dns": "2020.11.1",
+  "dns": "2020.11.0",
   "audio": "17",
   "multicast": "3",
   "observer": "2020.10.1",
