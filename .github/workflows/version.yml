@@ -1,0 +1,90 @@
+name: Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: 'File(s) to run action against'
+        required: true
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    paths:
+    - apparmor.txt
+    - '*.json'
+
+env:
+  PYTHON_VERSION: "3.7"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+ 
+    - name: Lint with JQ
+      uses: openpeerpower/actions/helpers/jq@main
+
+  upload:
+    name: Upload
+    needs: lint
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    - name: Setup Python version ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Get changed files for push
+      if: github.event_name == 'push'
+      id: changed_files_push
+      uses: jitterbit/get-changed-files@v1
+
+    - name: Get changed files
+      id: changed_files
+      run: |
+        if [[ ${{ github.event_name }} == "push" ]]; then
+          echo "::set-output name=files::${{ steps.changed_files_push.outputs.all }}"
+        else
+          echo "::set-output name=files::${{ github.event.inputs.files }}"
+        fi
+
+    - name: Install AWS CLI
+      run: pip install awscli
+
+    - name: Upload files
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        for file in ${{ steps.changed_files.outputs.files }}; do
+          if [[ "$file" =~ \.txt|\.json|\.png ]]; then
+            aws s3 sync . s3://version.openpeerpower.io --exclude "*" --include "$file"
+          fi
+        done
+
+    - name: Gather files for cache flush
+      id: flush
+      run: |
+        declare -a files
+        for file in ${{ steps.changed_files.outputs.files }}; do
+          if [[ "$file" =~ \.txt|\.json ]]; then
+            files+=("\"https:\/\/version.openpeerpower.io\/$file\", ")
+          fi
+        done
+        echo "::set-output name=files::[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
+
+    - name: Flush CloudFlare cache
+      run: |
+        curl --silent --show-error --fail -X POST \
+          "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
+          -H "Authorization: Bearer ${{ secrets.CF_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"files": ${{ steps.flush.outputs.files }}}'
