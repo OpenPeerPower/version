@@ -36,7 +36,7 @@
     "odroid-xu4": "5.9",
     "intel-nuc": "5.9"
   },
-  "ota": "https://github.com/open-peer-power/operating-system/releases/download/{version}/oppos_{board}-{version}.raucb",
+  "ota": "https://github.com/openpeerpower/operating-system/releases/download/{version}/oppos_{board}-{version}.raucb",
   "cli": "2020.11.1",
   "dns": "2020.11.0",
   "audio": "17",

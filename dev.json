@@ -36,7 +36,7 @@
     "odroid-xu4": "6.0.dev20201222",
     "intel-nuc": "6.0.dev20201222"
   },
-  "ota": "https://os-builds.open-peer-power.io/{version}/oppos_{board}-{version}.raucb",
+  "ota": "https://os-builds.openpeerpower.io/{version}/oppos_{board}-{version}.raucb",
   "cli": "2020.11.1",
   "dns": "2020.12.dev2801",
   "audio": "2020.10.dev213",
